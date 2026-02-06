@@ -202,6 +202,21 @@ fun mainPageSelector (tabs : source int) : xtr = <xml>
       | _ => <xml><td><h1>Contact</h1><p>Get in touch...</p></td></xml>)}/>
 </xml>
 
+(* Separate function so the main page is not one giant inline expression (reduces IR size for compiler). *)
+fun mainContent (tabs : source int) (sidepanel : source int) (info : {Nam : string, Email : string}) : xbody = <xml>
+  <section>
+    {headerMenuTabs tabs}
+    <table>
+      <tbody>
+        <tr>
+          {(sidePanel {Sidepanel = sidepanel, Nam = info.Nam, Email = info.Email})}
+          {(mainPageSelector tabs)}
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</xml>
+
 fun main () =
   (* Initialize source for tabs*)
   tabs <- source 0;
@@ -209,7 +224,7 @@ fun main () =
   sidepanel <- source 0;
   (* Getting UserId, this will be used to check if a user is logged in*)
   userid <- User.userId ();
-  blurb <- User.blurb main;
+  blurb <- User.blurb ();
   case userid of
     None => return <xml><head><title>Charts</title></head><body><h1>Please log in</h1>{blurb}</body></xml>
     | Some uid =>
@@ -220,16 +235,6 @@ fun main () =
           <head><title>Charts</title></head>
           <body>
             {blurb}
-            <section>
-              {headerMenuTabs tabs}
-              <table>
-                <tbody>
-                  <tr>
-                    {(sidePanel {Sidepanel = sidepanel, Nam = info.Nam, Email = info.Email})}
-                    {(mainPageSelector tabs)}
-                  </tr>
-                </tbody>
-              </table>
-            </section>
+            {mainContent tabs sidepanel info}
           </body>
         </xml>

@@ -8,4 +8,4 @@ table user : { Id : user, Nam : string, Email : string, Pass : string }
 
 val userId : unit -> transaction (option user)
 val currentUserInfo : unit -> transaction (option {Nam : string, Email : string})
-val blurb : (unit -> transaction page) -> transaction xbody
+val blurb : unit -> transaction xbody

@@ -55,7 +55,7 @@ fun currentUserInfo () =
                    WHERE user.Id = {[uid]});
     return (Some {Nam = row.User.Nam, Email = row.User.Email})
 
-fun blurb (goHome : unit -> transaction page) =
+fun blurb () =
   let
     fun logon r =
       ro <- oneOrNoRows (SELECT user.Id
@@ -66,54 +66,53 @@ fun blurb (goHome : unit -> transaction page) =
         None => error <xml>Wrong username or password!</xml>
       | Some r' =>
         setCookie login {Value = {Id = r'.User.Id, Pass = r.Pass}, Secure = False, Expires = None};
-        goHome ()
+        return <xml>
+          <head><title>Logged in</title></head>
+          <body><p>You are now logged in.</p></body>
+        </xml>
 
     fun logoff () =
       clearCookie login;
-      goHome ()
+      return <xml>
+        <head><title>Logged out</title></head>
+        <body><p>You are logged off.</p></body>
+      </xml>
+
+    fun create r =
+      id <- nextval userIds;
+      dml (INSERT INTO user (Id, Nam, Email, Pass)
+           VALUES ({[id]}, {[r.Nam]}, {[r.Email]}, {[r.Pass]}));
+      setCookie login {Value = {Id = id, Pass = r.Pass}, Secure = False, Expires = None};
+      return <xml>
+        <head><title>Account created</title></head>
+        <body><p>Your account has been created.</p></body>
+      </xml>
 
     fun signup () =
-      let
-        fun create r =
-          id <- nextval userIds;
-          dml (INSERT INTO user (Id, Nam, Email, Pass)
-               VALUES ({[id]}, {[r.Nam]}, {[r.Email]}, {[r.Pass]}));
-          setCookie login {Value = {Id = id, Pass = r.Pass}, Secure = False, Expires = None};
-          goHome ()
-      in
-        return <xml>
-          <head>
-            <title>Sign-up</title>
-          </head>
-
-          <body>
-            <form><table>
-              <tr> <th>Name:</th> <td><textbox{#Nam}/></td> </tr>
-              <tr> <th>Email:</th> <td><textbox{#Email}/></td> </tr>
-              <tr> <th>Password:</th> <td><password{#Pass}/></td> </tr>
-              <tr> <td><submit value="Create" action={create}/></td> </tr>
-            </table></form>
-          </body>
-        </xml>
-      end
+      return <xml>
+        <head><title>Sign up</title></head>
+        <body>
+          <form><table>
+            <tr><th>Name:</th><td><textbox{#Nam}/></td></tr>
+            <tr><th>Email:</th><td><textbox{#Email}/></td></tr>
+            <tr><th>Password:</th><td><password{#Pass}/></td></tr>
+            <tr><td><submit value="Create" action={create}/></td></tr>
+          </table></form>
+        </body>
+      </xml>
   in
     u <- userId ();
-
     return (case u of
               None => <xml>
                 <h2>Log in</h2>
-
                 <form><table>
-                  <tr> <th>Name:</th> <td><textbox{#Nam}/></td> </tr>
-                  <tr> <th>Password:</th> <td><password{#Pass}/></td> </tr>
-                  <tr> <td><submit value="Log on" action={logon}/></td> </tr>
+                  <tr><th>Name:</th><td><textbox{#Nam}/></td></tr>
+                  <tr><th>Password:</th><td><password{#Pass}/></td></tr>
+                  <tr><td><submit value="Log on" action={logon}/></td></tr>
                 </table></form>
-
                 <a link={signup ()}>Create account</a>
               </xml>
-            | Some u => <xml>
-              <form>
-                <submit value="Log off" action={logoff}/>
-              </form>
-            </xml>)
+            | Some _ => <xml>
+                <form><submit value="Log off" action={logoff}/></form>
+              </xml>)
   end

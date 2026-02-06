@@ -1,8 +1,8 @@
 open User
 
-(*
-type sidePanelArgs = {Sidepanel : source int, Nam : string, Email : string}
-*)
+fun listItem (active : int, status : source int, index : int, text : string) : xbody = <xml>
+  <li style={if active = index then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set status index}>{[text]}</li>
+</xml>
 
 fun sidePanel (status : source int, nam : string, email : string) : xtr = <xml>
   <td>
@@ -12,32 +12,32 @@ fun sidePanel (status : source int, nam : string, email : string) : xtr = <xml>
           <figure>
             <figcaption>Spaces</figcaption>
             <ul>
-              <li style={if active = 0 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set status 0}>Projects</li>
-              <li style={if active = 1 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set status 1}>Data Room</li>
-              <li style={if active = 2 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set status 2}>Funding</li>
-              <li style={if active = 3 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set status 3}>Legal</li>
+              {(listItem (active, status, 0, "Projects"))}
+              {(listItem (active, status, 1, "Data Room"))}
+              {(listItem (active, status, 2, "Legal"))}
+              {(listItem (active, status, 3, "Funding"))}
             </ul>
           </figure>
           <figure>
             <figcaption>Funding</figcaption>
             <ul>
-              <li style={if active = 4 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set status 4}>Account</li>
-              <li style={if active = 5 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set status 5}>Loans</li>
-              <li style={if active = 6 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set status 6}>KYC / AML</li>
+              {(listItem (active, status, 4, "Account"))}
+              {(listItem (active, status, 5, "Loans"))}
+              {(listItem (active, status, 6, "KYC / AML"))}
             </ul>
           </figure>
           <figure>
             <figcaption>Data</figcaption>
             <ul>
-              <li style={if active = 7 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set status 7}>Sources</li>
-              <li style={if active = 8 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set status 8}>Validation</li>
-              <li style={if active = 9 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set status 9}>Key financials</li>
+              {(listItem (active, status, 7, "Sources"))}
+              {(listItem (active, status, 8, "Validation"))}
+              {(listItem (active, status, 9, "Key financials"))}
             </ul>
           </figure>
           <figure>
             <figcaption>Tools</figcaption>
             <ul>
-              <li style={if active = 10 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set status 10}>Forecasting studio</li>
+              {(listItem (active, status, 10, "Forecasting studio"))}
             </ul>
           </figure>
           <hr/>
@@ -46,6 +46,10 @@ fun sidePanel (status : source int, nam : string, email : string) : xtr = <xml>
       <p>{[email]}</p>
     </fieldset>
   </td>
+</xml>
+
+fun headerItem (active : int, status : source int, index : int, text : string) : xtr = <xml>
+  <th><nav style={if active = index then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set status index}>{[text]}</nav></th>
 </xml>
 
 fun headerMenuTabs (tabs : source int) : xbody = <xml>
@@ -59,10 +63,10 @@ fun headerMenuTabs (tabs : source int) : xbody = <xml>
         </th>
         <dyn signal={active <- signal tabs;
           return <xml>
-            <th><nav style={if active = 0 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set tabs 0}>Overview</nav></th>
-            <th><nav style={if active = 1 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set tabs 1}>My Loans</nav></th>
-            <th><nav style={if active = 2 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set tabs 2}>Properties</nav></th>
-            <th><nav style={if active = 3 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set tabs 3}>Documents</nav></th>
+            {(headerItem (active, tabs, 0, "Overview"))}
+            {(headerItem (active, tabs, 1, "My Loans"))}
+            {(headerItem (active, tabs, 2, "Properties"))}
+            {(headerItem (active, tabs, 3, "Documents"))}
           </xml>}/>
       </tr>
     </thead>
@@ -224,19 +228,17 @@ fun main () =
   tabs <- source 0;
   (* Initialize source for sidepanel*)
   sidepanel <- source 0;
-  (* Getting UserId, this will be used to check if a user is logged in*)
-  userid <- User.userId ();
-  blurb <- User.blurb ();
-  case userid of
-    None => return <xml><head><title>Charts</title></head><body><h1>Please log in</h1>{blurb}</body></xml>
-    | Some uid =>
+  blurb_result <- User.blurb ();
+  case blurb_result.LoggedIn of
+    False => return <xml><head><title>Charts</title></head><body><h1>Please log in</h1>{blurb_result.Content}</body></xml>
+    | True =>
       info_opt <- User.currentUserInfo ();
       case info_opt of
         None => return <xml><head><title>Charts</title></head><body><h1>Error loading user info</h1></body></xml>
         | Some info => return <xml>
           <head><title>Charts</title></head>
           <body>
-            {blurb}
+            {blurb_result.Content}
             {mainContent tabs sidepanel info}
           </body>
         </xml>

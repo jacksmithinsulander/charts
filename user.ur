@@ -103,7 +103,7 @@ fun blurb () =
   in
     u <- userId ();
     return (case u of
-              None => <xml>
+              None => {LoggedIn = False, Content = <xml>
                 <h2>Log in</h2>
                 <form><table>
                   <tr><th>Name:</th><td><textbox{#Nam}/></td></tr>
@@ -111,8 +111,8 @@ fun blurb () =
                   <tr><td><submit value="Log on" action={logon}/></td></tr>
                 </table></form>
                 <a link={signup ()}>Create account</a>
-              </xml>
-            | Some _ => <xml>
+              </xml>}
+            | Some _ => {LoggedIn = True, Content = <xml>
                 <form><submit value="Log off" action={logoff}/></form>
-              </xml>)
+              </xml>})
   end

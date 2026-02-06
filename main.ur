@@ -1,47 +1,49 @@
 open User
 
+(*
 type sidePanelArgs = {Sidepanel : source int, Nam : string, Email : string}
+*)
 
-fun sidePanel (r : sidePanelArgs) : xtr = <xml>
+fun sidePanel (status : source int, nam : string, email : string) : xtr = <xml>
   <td>
     <fieldset>
-      <dyn signal={active <- signal r.Sidepanel;
+      <dyn signal={active <- signal status;
         return <xml>
           <figure>
             <figcaption>Spaces</figcaption>
             <ul>
-              <li style={if active = 0 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set r.Sidepanel 0}>Projects</li>
-              <li style={if active = 1 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set r.Sidepanel 1}>Data Room</li>
-              <li style={if active = 2 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set r.Sidepanel 2}>Funding</li>
-              <li style={if active = 3 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set r.Sidepanel 3}>Legal</li>
+              <li style={if active = 0 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set status 0}>Projects</li>
+              <li style={if active = 1 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set status 1}>Data Room</li>
+              <li style={if active = 2 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set status 2}>Funding</li>
+              <li style={if active = 3 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set status 3}>Legal</li>
             </ul>
           </figure>
           <figure>
             <figcaption>Funding</figcaption>
             <ul>
-              <li style={if active = 4 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set r.Sidepanel 4}>Account</li>
-              <li style={if active = 5 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set r.Sidepanel 5}>Loans</li>
-              <li style={if active = 6 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set r.Sidepanel 6}>KYC / AML</li>
+              <li style={if active = 4 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set status 4}>Account</li>
+              <li style={if active = 5 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set status 5}>Loans</li>
+              <li style={if active = 6 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set status 6}>KYC / AML</li>
             </ul>
           </figure>
           <figure>
             <figcaption>Data</figcaption>
             <ul>
-              <li style={if active = 7 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set r.Sidepanel 7}>Sources</li>
-              <li style={if active = 8 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set r.Sidepanel 8}>Validation</li>
-              <li style={if active = 9 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set r.Sidepanel 9}>Key financials</li>
+              <li style={if active = 7 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set status 7}>Sources</li>
+              <li style={if active = 8 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set status 8}>Validation</li>
+              <li style={if active = 9 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set status 9}>Key financials</li>
             </ul>
           </figure>
           <figure>
             <figcaption>Tools</figcaption>
             <ul>
-              <li style={if active = 10 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set r.Sidepanel 10}>Forecasting studio</li>
+              <li style={if active = 10 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set status 10}>Forecasting studio</li>
             </ul>
           </figure>
           <hr/>
         </xml>}/>
-      <h3>{[r.Nam]}</h3>
-      <p>{[r.Email]}</p>
+      <h3>{[nam]}</h3>
+      <p>{[email]}</p>
     </fieldset>
   </td>
 </xml>
@@ -209,7 +211,7 @@ fun mainContent (tabs : source int) (sidepanel : source int) (info : {Nam : stri
     <table>
       <tbody>
         <tr>
-          {(sidePanel {Sidepanel = sidepanel, Nam = info.Nam, Email = info.Email})}
+          {(sidePanel (sidepanel, info.Nam, info.Email))}
           {(mainPageSelector tabs)}
         </tr>
       </tbody>

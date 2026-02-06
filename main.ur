@@ -1,3 +1,51 @@
+open User
+
+type sidePanelArgs = {Sidepanel : source int, Nam : string, Email : string}
+
+fun sidePanel (r : sidePanelArgs) : xtr = <xml>
+  <td>
+    <fieldset>
+      <dyn signal={active <- signal r.Sidepanel;
+        return <xml>
+          <figure>
+            <figcaption>Spaces</figcaption>
+            <ul>
+              <li style={if active = 0 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set r.Sidepanel 0}>Projects</li>
+              <li style={if active = 1 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set r.Sidepanel 1}>Data Room</li>
+              <li style={if active = 2 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set r.Sidepanel 2}>Funding</li>
+              <li style={if active = 3 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set r.Sidepanel 3}>Legal</li>
+            </ul>
+          </figure>
+          <figure>
+            <figcaption>Funding</figcaption>
+            <ul>
+              <li style={if active = 4 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set r.Sidepanel 4}>Account</li>
+              <li style={if active = 5 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set r.Sidepanel 5}>Loans</li>
+              <li style={if active = 6 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set r.Sidepanel 6}>KYC / AML</li>
+            </ul>
+          </figure>
+          <figure>
+            <figcaption>Data</figcaption>
+            <ul>
+              <li style={if active = 7 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set r.Sidepanel 7}>Sources</li>
+              <li style={if active = 8 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set r.Sidepanel 8}>Validation</li>
+              <li style={if active = 9 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set r.Sidepanel 9}>Key financials</li>
+            </ul>
+          </figure>
+          <figure>
+            <figcaption>Tools</figcaption>
+            <ul>
+              <li style={if active = 10 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set r.Sidepanel 10}>Forecasting studio</li>
+            </ul>
+          </figure>
+          <hr/>
+        </xml>}/>
+      <h3>{[r.Nam]}</h3>
+      <p>{[r.Email]}</p>
+    </fieldset>
+  </td>
+</xml>
+
 fun headerMenuTabs (tabs : source int) : xbody = <xml>
   <table>
     <thead>
@@ -17,50 +65,6 @@ fun headerMenuTabs (tabs : source int) : xbody = <xml>
       </tr>
     </thead>
   </table>
-</xml>
-
-fun sidePanel (sidepanel : source int) : xtr = <xml>
-  <td>
-    <fieldset>
-      <dyn signal={active <- signal sidepanel;
-        return <xml>
-          <figure>
-            <figcaption>Spaces</figcaption>
-            <ul>
-              <li style={if active = 0 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set sidepanel 0}>Projects</li>
-              <li style={if active = 1 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set sidepanel 1}>Data Room</li>
-              <li style={if active = 2 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set sidepanel 2}>Funding</li>
-              <li style={if active = 3 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set sidepanel 3}>Legal</li>
-            </ul>
-          </figure>
-          <figure>
-            <figcaption>Funding</figcaption>
-            <ul>
-              <li style={if active = 4 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set sidepanel 4}>Account</li>
-              <li style={if active = 5 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set sidepanel 5}>Loans</li>
-              <li style={if active = 6 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set sidepanel 6}>KYC / AML</li>
-            </ul>
-          </figure>
-          <figure>
-            <figcaption>Data</figcaption>
-            <ul>
-              <li style={if active = 7 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set sidepanel 7}>Sources</li>
-              <li style={if active = 8 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set sidepanel 8}>Validation</li>
-              <li style={if active = 9 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set sidepanel 9}>Key financials</li>
-            </ul>
-          </figure>
-          <figure>
-            <figcaption>Tools</figcaption>
-            <ul>
-              <li style={if active = 10 then STYLE "background: #333; color: #fff" else STYLE "background: #fff; color: #333"} onclick={fn _ => set sidepanel 10}>Forecasting studio</li>
-            </ul>
-          </figure>
-          <hr/>
-        </xml>}/>
-      <h3>Sarah Johnson</h3>
-      <p>sarah@company.com</p>
-    </fieldset>
-  </td>
 </xml>
 
 fun overview () : xtr = <xml>
@@ -199,23 +203,33 @@ fun mainPageSelector (tabs : source int) : xtr = <xml>
 </xml>
 
 fun main () =
+  (* Initialize source for tabs*)
   tabs <- source 0;
+  (* Initialize source for sidepanel*)
   sidepanel <- source 0;
-  return <xml>
-    <head>
-      <title>Property Portfolio</title>
-    </head>
-    <body>
-      <section>
-        {headerMenuTabs tabs}
-        <table>
-          <tbody>
-            <tr>
-              {sidePanel sidepanel}
-              {mainPageSelector tabs}
-            </tr>
-          </tbody>
-        </table>
-      </section>
-    </body>
-  </xml>
+  (* Getting UserId, this will be used to check if a user is logged in*)
+  userid <- User.userId ();
+  blurb <- User.blurb main;
+  case userid of
+    None => return <xml><head><title>Charts</title></head><body><h1>Please log in</h1>{blurb}</body></xml>
+    | Some uid =>
+      info_opt <- User.currentUserInfo ();
+      case info_opt of
+        None => return <xml><head><title>Charts</title></head><body><h1>Error loading user info</h1></body></xml>
+        | Some info => return <xml>
+          <head><title>Charts</title></head>
+          <body>
+            {blurb}
+            <section>
+              {headerMenuTabs tabs}
+              <table>
+                <tbody>
+                  <tr>
+                    {(sidePanel {Sidepanel = sidepanel, Nam = info.Nam, Email = info.Email})}
+                    {(mainPageSelector tabs)}
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+          </body>
+        </xml>

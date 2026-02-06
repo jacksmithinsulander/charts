@@ -1,1 +1,6 @@
+database dbname=scdv
+sql db/user.sql
+
+$/option
+user
 main
